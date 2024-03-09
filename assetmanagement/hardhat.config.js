@@ -2,12 +2,12 @@
 module.exports = {
   solidity: {
     version: '0.8.17',
-    defaultNetwork: 'goerli',
+    defaultNetwork: 'Fantom Testnet',
     networks: {
       hardhat: {},
       goerli: {
-        url: 'https://rpc.ankr.com/eth_goerli',
-        accounts: [`0x${process.env.PRIVATE_KEY}`]
+        url: 'https://rpc.testnet.fantom.network',
+        accounts: [`0x9E89b95bf4E965Aa9295967f8442701661eEBF10`]
       }
     },
     settings: {
