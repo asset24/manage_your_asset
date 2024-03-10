@@ -10,7 +10,8 @@ import './index.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-  <ThirdwebProvider desiredChainId={ChainId.FantomTestnet}> 
+  <ThirdwebProvider activeChain="fantom-testnet"
+  clientId="60b54797f891dcfd58577f30296c9c73"> 
     <Router>
       <StateContextProvider>
         <App />
