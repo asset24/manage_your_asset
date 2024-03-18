@@ -8,15 +8,15 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   // const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
+  const { contract } = useContract('0x73CBB32273fB6A70e6E302aA00E9F52F579AcF25');
+  const { mutateAsync: createAsset } = useContractWrite(contract, 'createAsset');
 
   const address = useAddress();
   const connect = useMetamask();
 
-  const publishCampaign = async (form) => {
+  const publishAsset = async (form) => {
     try {
-      const data = await createCampaign({
+      const data = await createAsset({
 				args: [
 					address, // owner
 					form.title, // title
@@ -33,33 +33,33 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
-  const getCampaigns = async () => {
-    const campaigns = await contract.call('getCampaigns');
+  const getAssets = async () => {
+    const assets = await contract.call('getAssets');
 
-    const parsedCampaings = campaigns.map((campaign, i) => ({
-      owner: campaign.owner,
-      title: campaign.title,
-      description: campaign.description,
-      target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
-      image: campaign.image,
+    const parsedCampaings = assets.map((asset, i) => ({
+      owner: asset.owner,
+      title: asset.title,
+      description: asset.description,
+      target: ethers.utils.formatEther(asset.target.toString()),
+      deadline: asset.deadline.toNumber(),
+      amountCollected: ethers.utils.formatEther(asset.amountCollected.toString()),
+      image: asset.image,
       pId: i
     }));
 
     return parsedCampaings;
   }
 
-  const getUserCampaigns = async () => {
-    const allCampaigns = await getCampaigns();
+  const getUserAssets = async () => {
+    const allAssets = await getAssets();
 
-    const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
+    const filteredAssets = allAssets.filter((asset) => asset.owner === address);
 
-    return filteredCampaigns;
+    return filteredAssets;
   }
 
   const donate = async (pId, amount) => {
-    const data = await contract.call('donateToCampaign', [pId], { value: ethers.utils.parseEther(amount)});
+    const data = await contract.call('donateToAsset', [pId], { value: ethers.utils.parseEther(amount)});
 
     return data;
   }
@@ -87,9 +87,9 @@ export const StateContextProvider = ({ children }) => {
         address,
         contract,
         connect,
-        createCampaign: publishCampaign,
-        getCampaigns,
-        getUserCampaigns,
+        createAsset: publishAsset,
+        getAssets,
+        getUserAssets,
         donate,
         getDonations
       }}

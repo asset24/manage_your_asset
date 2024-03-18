@@ -41,7 +41,7 @@ contract Myasset {
         return (assets[_id].buyer, assets[_id].boughtunit);
     }
 
-    function getassets() public view returns (Asset[] memory){
+    function getAssets() public view returns (Asset[] memory){
         Asset[] memory allassets=new Asset[](numberofassets);
         for(uint i=0;i<numberofassets;i++){
             // allassets[i] =assets[i];
@@ -70,13 +70,13 @@ contract Myasset {
     
 
     
-    function getbuyer() view public returns (Buy[] memory) {
+    function getBuyer() view public returns (Buy[] memory) {
        address buers=msg.sender;
         return buys[buers];
     }
      
 
-     function tobuyasset(uint256 _id)public payable{
+     function toBuyAsset(uint256 _id)public payable{
         
 
         Asset storage asset=assets[_id];

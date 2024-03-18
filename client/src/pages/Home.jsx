@@ -1,30 +1,30 @@
 import React, { useState, useEffect } from 'react'
 
-import { DisplayCampaigns } from '../components';
+import { DisplayAssets } from '../components';
 import { useStateContext } from '../context'
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [campaigns, setCampaigns] = useState([]);
+  const [assets, setAssets] = useState([]);
 
-  const { address, contract, getCampaigns } = useStateContext();
+  const { address, contract, getAssets } = useStateContext();
 
-  const fetchCampaigns = async () => {
+  const fetchAssets = async () => {
     setIsLoading(true);
-    const data = await getCampaigns();
-    setCampaigns(data);
+    const data = await getAssets();
+    setAssets(data);
     setIsLoading(false);
   }
 
   useEffect(() => {
-    if(contract) fetchCampaigns();
+    if(contract) fetchAssets();
   }, [address, contract]);
 
   return (
-    <DisplayCampaigns 
-      title="All Campaigns"
+    <DisplayAssets 
+      title="All Assets"
       isLoading={isLoading}
-      campaigns={campaigns}
+      assets={assets}
     />
   )
 }
