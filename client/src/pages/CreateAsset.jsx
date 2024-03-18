@@ -15,12 +15,16 @@ const CreateAsset = () => {
     name: '',
     title: '',
     description: '',
-    target: '', 
-    deadline: '',
+    priceperunit: '', 
+    quantity:0,
     image: ''
   });
 
   const handleFormFieldChange = (fieldName, e) => {
+    if((fieldName=="quantity" || fieldName=="priceperunit") && e.target.value<0)
+    {
+      e.target.value = 0;
+    }
     setForm({ ...form, [fieldName]: e.target.value })
   }
 
@@ -30,7 +34,7 @@ const CreateAsset = () => {
     checkIfImage(form.image, async (exists) => {
       if(exists) {
         setIsLoading(true)
-        await createAsset({ ...form, target: ethers.utils.parseUnits(form.target, 18)})
+        await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18),quantity: ethers.utils.parseUnits(form.quantity)})
         setIsLoading(false);
         navigate('/');
       } else {
@@ -44,7 +48,7 @@ const CreateAsset = () => {
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
       {isLoading && <Loader />}
       <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
-        <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">Start a Asset</h1>
+        <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">Asset Details</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="w-full mt-[65px] flex flex-col gap-[30px]">
@@ -66,33 +70,35 @@ const CreateAsset = () => {
         </div>
 
         <FormField 
-            labelName="Story *"
-            placeholder="Write your story"
+            labelName="Description *"
+            placeholder="Wrie a Brief description"
             isTextArea
             value={form.description}
             handleChange={(e) => handleFormFieldChange('description', e)}
           />
 
-        <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
+        {/* <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
           <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>
           <h4 className="font-epilogue font-bold text-[25px] text-white ml-[20px]">You will get 100% of the raised amount</h4>
-        </div>
+        </div> */}
 
         <div className="flex flex-wrap gap-[40px]">
           <FormField 
-            labelName="Goal *"
+            labelName="Price Per Unit*"
             placeholder="ETH 0.50"
             inputType="text"
-            value={form.target}
-            handleChange={(e) => handleFormFieldChange('target', e)}
+            value={form.priceperunit}
+            handleChange={(e) => handleFormFieldChange('priceperunit', e)}
           />
           <FormField 
-            labelName="End Date *"
-            placeholder="End Date"
-            inputType="date"
-            value={form.deadline}
-            handleChange={(e) => handleFormFieldChange('deadline', e)}
+            labelName="Quantity *"
+            placeholder="10"
+            inputType="number"
+            value={form.quantity}
+            min="0"
+            handleChange={(e) => handleFormFieldChange('quantity', e)}
           />
+          
         </div>
 
         <FormField 
@@ -102,7 +108,7 @@ const CreateAsset = () => {
             value={form.image}
             handleChange={(e) => handleFormFieldChange('image', e)}
           />
-
+        
           <div className="flex justify-center items-center mt-[40px]">
             <CustomButton 
               btnType="submit"
