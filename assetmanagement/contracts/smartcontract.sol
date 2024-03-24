@@ -82,7 +82,8 @@ contract Myasset {
         Asset storage asset=assets[_id];
         uint256 buyquantity=msg.value;
         // require(asset.deadline < block.timestamp,"The deadline should be a date in the future");
-        require( buyquantity>asset.available,"not enough quantity available");
+        require(buyquantity > 0, "Invalid buy quantity");
+        require(asset.available >= buyquantity, "Insufficient available units");
         uint256 amount=buyquantity*asset.price;
         asset.available=asset.available-buyquantity;
         asset.buyer.push(msg.sender);
@@ -96,13 +97,10 @@ contract Myasset {
         buyer.description=asset.description;
         buyer.quantity=buyquantity;
         buyer.priceperunit=asset.price;
-        buyer.quantity=buyquantity;
         buyer.buyquantityavailable=buyquantity;
         buyer.image=asset.image;
         buys[msg.sender].push(buyer);
         }
-        
-
 
     }
 

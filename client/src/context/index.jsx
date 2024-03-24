@@ -8,7 +8,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   // const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { contract } = useContract('0x73CBB32273fB6A70e6E302aA00E9F52F579AcF25');
+  const { contract } = useContract('0x5264d88f24CA065bCc408B55F75694CaC193020A');
   const { mutateAsync: createAsset } = useContractWrite(contract, 'createAsset');
 
   const address = useAddress();
@@ -58,26 +58,24 @@ export const StateContextProvider = ({ children }) => {
     return filteredAssets;
   }
 
-  const donate = async (pId, amount) => {
-    const data = await contract.call('donateToAsset', [pId], { value: ethers.utils.parseEther(amount)});
-
+  const toBuyAsset = async (pId, amount) => {
+    const data = await contract.call('toBuyAsset', [pId], { value:parseInt(amount, 10)});
     return data;
   }
 
-  const getDonations = async (pId) => {
-    const donations = await contract.call('getDonators', [pId]);
-    const numberOfDonations = donations[0].length;
+  const getBuyer = async (pId) => {
+    const buyer = await contract.call('getAssetBuyer', [pId]);
+    const numberOfBuyer = buyer[0].length;
 
-    const parsedDonations = [];
+    const parsedBuyer = [];
 
-    for(let i = 0; i < numberOfDonations; i++) {
-      parsedDonations.push({
-        donator: donations[0][i],
-        donation: ethers.utils.formatEther(donations[1][i].toString())
+    for(let i = 0; i < numberOfBuyer; i++) {
+      parsedBuyer.push({
+        buyer: buyer[0][i],
+        boughtunits: ethers.utils.formatEther(buyer[1][i].toString())
       })
     }
-
-    return parsedDonations;
+    return parsedBuyer;
   }
 
 
@@ -90,8 +88,8 @@ export const StateContextProvider = ({ children }) => {
         createAsset: publishAsset,
         getAssets,
         getUserAssets,
-        donate,
-        getDonations
+        toBuyAsset,
+        getBuyer
       }}
     >
       {children}

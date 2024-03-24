@@ -12,7 +12,7 @@ const FundCard = ({ owner, title, description, priceperunit, quantity, available
       <div className="flex flex-col p-4">
         <div className="flex flex-row items-center mb-[18px]">
           <img src={tagType} alt="tag" className="w-[17px] h-[17px] object-contain"/>
-          <p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">Education</p>
+          <p className="ml-[12px] mt-[2px] font-epilogue font-medium text-[12px] text-[#808191]">Asset</p>
         </div>
 
         <div className="block">
@@ -22,12 +22,12 @@ const FundCard = ({ owner, title, description, priceperunit, quantity, available
 
         <div className="flex justify-between flex-wrap mt-[15px] gap-2">
           <div className="flex flex-col">
-            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{quantity}</h4>
-            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">Raised of {priceperunit}</p>
+            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{available}</h4>
+            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">Out of {quantity}</p>
           </div>
           <div className="flex flex-col">
-            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{available}</h4>
-            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">Days Left</p>
+            <h4 className="font-epilogue font-semibold text-[14px] text-[#b2b3bd] leading-[22px]">{priceperunit}</h4>
+            <p className="mt-[3px] font-epilogue font-normal text-[12px] leading-[18px] text-[#808191] sm:max-w-[120px] truncate">price</p>
           </div>
         </div>
 
