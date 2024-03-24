@@ -21,8 +21,8 @@ export const StateContextProvider = ({ children }) => {
 					address, // owner
 					form.title, // title
 					form.description, // description
-					form.target,
-					new Date(form.deadline).getTime(), // deadline,
+					form.quantity,
+          form.priceperunit,
 					form.image,
 				],
 			});
@@ -35,19 +35,19 @@ export const StateContextProvider = ({ children }) => {
 
   const getAssets = async () => {
     const assets = await contract.call('getAssets');
-
-    const parsedCampaings = assets.map((asset, i) => ({
+    const parsedAssets = assets.map((asset, i) => (
+      {
       owner: asset.owner,
       title: asset.title,
       description: asset.description,
-      target: ethers.utils.formatEther(asset.target.toString()),
-      deadline: asset.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(asset.amountCollected.toString()),
+      priceperunit: asset.price ? ethers.utils.formatEther(asset.price.toString()) : '',
+      quantity: asset.quantity ? asset.quantity.toString() : '',
+      available: asset.available.toString(),
       image: asset.image,
       pId: i
     }));
 
-    return parsedCampaings;
+    return parsedAssets;
   }
 
   const getUserAssets = async () => {

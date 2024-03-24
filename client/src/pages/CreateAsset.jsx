@@ -34,7 +34,7 @@ const CreateAsset = () => {
     checkIfImage(form.image, async (exists) => {
       if(exists) {
         setIsLoading(true)
-        await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18),quantity: ethers.utils.parseUnits(form.quantity)})
+        await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18)})
         setIsLoading(false);
         navigate('/');
       } else {
