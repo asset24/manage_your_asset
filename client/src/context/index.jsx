@@ -44,6 +44,8 @@ export const StateContextProvider = ({ children }) => {
       quantity: asset.quantity ? asset.quantity.toString() : '',
       available: asset.available.toString(),
       image: asset.image,
+      buyer: asset.buyer,
+      boughtunits: asset.boughtunits,
       pId: i
     }));
 
@@ -88,27 +90,33 @@ export const StateContextProvider = ({ children }) => {
   
     for (const asset of allAssets) {
       const buyers = await getBuyer(asset.pId);
-  
+      let buyersMap={
+        buyerAddress: address,
+        boughtunits: 0
+      };
       for (let j = 0; j < buyers.length; j++) {
         if (buyers[j].buyer === address) {
-          buyerAssets.push({
-            owner: address,
-            title: asset.title,
-            description: asset.description,
-            priceperunit: asset.priceperunit,
-            quantity: buyers[j].boughtunits.toString(),
-            available: asset.available,
-            image: asset.image,
-            pId: asset.pId,
-          });
+          buyersMap.boughtunits+=parseInt(buyers[j].boughtunits, 10); 
         }
       }
+      if (buyersMap.boughtunits > 0) {
+        buyerAssets.push({
+          owner: asset.owner,
+          title: asset.title,
+          description: asset.description,
+          priceperunit: asset.priceperunit,
+          quantity: asset.quantity,
+          available: buyersMap.boughtunits,
+          image: asset.image,
+          pId: asset.pId
+        });
+      }
+
     }
   
     return buyerAssets;
   }
   
-
   return (
     <StateContext.Provider
       value={{ 

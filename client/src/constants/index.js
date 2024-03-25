@@ -12,26 +12,13 @@ export const navlinks = [
     link: '/create-asset',
   },
   {
-    name: 'payment',
-    imgUrl: payment,
-    link: '/',
-    disabled: true,
-  },
-  {
     name: 'withdraw',
     imgUrl: withdraw,
-    link: '/',
-    disabled: true,
+    link: '/bought-asset',
   },
   {
     name: 'profile',
     imgUrl: profile,
     link: '/profile',
-  },
-  {
-    name: 'logout',
-    imgUrl: logout,
-    link: '/',
-    disabled: true,
   },
 ];
