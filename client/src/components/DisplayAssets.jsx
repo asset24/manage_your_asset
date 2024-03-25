@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import FundCard from './FundCard';
 import { loader } from '../assets';
 
-const DisplayAssets = ({ title, isLoading, assets }) => {
+const   DisplayAssets = ({ title, isLoading, assets }) => {
   const navigate = useNavigate();
 
   const handleNavigate = (asset) => {

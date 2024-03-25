@@ -58,6 +58,9 @@ export const StateContextProvider = ({ children }) => {
     return filteredAssets;
   }
 
+  
+  
+
   const toBuyAsset = async (pId, amount) => {
     const data = await contract.call('toBuyAsset', [pId], { value:parseInt(amount, 10)});
     return data;
@@ -72,12 +75,39 @@ export const StateContextProvider = ({ children }) => {
     for(let i = 0; i < numberOfBuyer; i++) {
       parsedBuyer.push({
         buyer: buyer[0][i],
-        boughtunits: ethers.utils.formatEther(buyer[1][i].toString())
+        boughtunits: buyer[1][i].toString(),
       })
     }
     return parsedBuyer;
   }
 
+  const getBuyerAssets = async () => {
+    const allAssets = await getAssets();
+  
+    let buyerAssets = [];  // Initialize buyerAssets as an empty array
+  
+    for (const asset of allAssets) {
+      const buyers = await getBuyer(asset.pId);
+  
+      for (let j = 0; j < buyers.length; j++) {
+        if (buyers[j].buyer === address) {
+          buyerAssets.push({
+            owner: address,
+            title: asset.title,
+            description: asset.description,
+            priceperunit: asset.priceperunit,
+            quantity: buyers[j].boughtunits.toString(),
+            available: asset.available,
+            image: asset.image,
+            pId: asset.pId,
+          });
+        }
+      }
+    }
+  
+    return buyerAssets;
+  }
+  
 
   return (
     <StateContext.Provider
@@ -89,6 +119,7 @@ export const StateContextProvider = ({ children }) => {
         getAssets,
         getUserAssets,
         toBuyAsset,
+        getBuyerAssets,
         getBuyer
       }}
     >
