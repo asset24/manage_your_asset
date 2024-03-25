@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { DisplayAssets } from '../components';
+import { DisplayAssetsBuy } from '../components';
 import { useStateContext } from '../context'
 
 const BoughtAsset = () => {
@@ -21,7 +21,7 @@ const BoughtAsset = () => {
   }, [address, contract]);
 
   return (
-    <DisplayAssets 
+    <DisplayAssetsBuy 
       title="All Assets"
       isLoading={isLoading}
       assets={assets}

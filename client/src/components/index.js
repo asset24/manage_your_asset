@@ -6,3 +6,5 @@ export { default as DisplayAssets } from './DisplayAssets';
 export { default as FundCard } from './FundCard';
 export { default as CountBox } from './CountBox';
 export { default as Loader } from './Loader';
+export { default as DisplayAssetsBuy } from './DisplayAssetsBuy';
+export { default as FundCardBuy } from './FundCardBuy';
