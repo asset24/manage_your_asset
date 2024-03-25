@@ -1,4 +1,4 @@
-import createAsset from './create-asset.svg';
+import createAsset from './create-campaign.svg';
 import dashboard from './dashboard.svg';
 import logo from './logo.svg';
 import logout from './logout.svg';
