@@ -60,6 +60,14 @@ export const StateContextProvider = ({ children }) => {
     return filteredAssets;
   }
 
+  const getAdminAssetsSell = async (key) => {
+    const allAssets = await getAssets();
+  
+    const filteredAssets = allAssets.filter((asset) => asset.owner === key);
+  
+    return filteredAssets;
+  }
+
   
   
 
@@ -116,7 +124,42 @@ export const StateContextProvider = ({ children }) => {
   
     return buyerAssets;
   }
+
+  const getAdminAssetsBuy = async (key) => {
+    const allAssets = await getAssets();
   
+    let buyerAssets = [];  // Initialize buyerAssets as an empty array
+  
+    for (const asset of allAssets) {
+      const buyers = await getBuyer(asset.pId);
+      let buyersMap={
+        buyerAddress: address,
+        boughtunits: 0
+      };
+      for (let j = 0; j < buyers.length; j++) {
+        if (buyers[j].buyer === key) {
+          buyersMap.boughtunits+=parseInt(buyers[j].boughtunits, 10); 
+        }
+      }
+      if (buyersMap.boughtunits > 0) {
+        buyerAssets.push({
+          owner: asset.owner,
+          title: asset.title,
+          description: asset.description,
+          priceperunit: asset.priceperunit,
+          quantity: asset.quantity,
+          available: buyersMap.boughtunits,
+          image: asset.image,
+          pId: asset.pId
+        });
+      }
+
+    }
+  
+    return buyerAssets;
+  }
+
+
   return (
     <StateContext.Provider
       value={{ 
@@ -128,7 +171,9 @@ export const StateContextProvider = ({ children }) => {
         getUserAssets,
         toBuyAsset,
         getBuyerAssets,
-        getBuyer
+        getBuyer,
+        getAdminAssetsSell,
+        getAdminAssetsBuy
       }}
     >
       {children}
