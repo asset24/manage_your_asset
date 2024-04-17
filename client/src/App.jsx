@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { Sidebar, Navbar } from './components';
-import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset  } from './pages';
+import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset, UserInput } from './pages';
 
 const App = () => {
   return (
@@ -20,6 +20,7 @@ const App = () => {
           <Route path="/create-asset" element={<CreateAsset />} />
           <Route path="/asset-details/:id" element={<AssetDetails />} />
           <Route path="/bought-asset" element={<BoughtAsset />} />
+          <Route path="/admin-page" element={<UserInput />} />
         </Routes>
       </div>
     </div>
