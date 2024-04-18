@@ -41,7 +41,7 @@ contract Myasset {
         return (assets[_id].buyer, assets[_id].boughtunit);
     }
 
-    function getassets() public view returns (Asset[] memory){
+    function getAssets() public view returns (Asset[] memory){
         Asset[] memory allassets=new Asset[](numberofassets);
         for(uint i=0;i<numberofassets;i++){
             // allassets[i] =assets[i];
@@ -70,19 +70,20 @@ contract Myasset {
     
 
     
-    function getbuyer() view public returns (Buy[] memory) {
+    function getBuyer() view public returns (Buy[] memory) {
        address buers=msg.sender;
         return buys[buers];
     }
      
 
-     function tobuyasset(uint256 _id)public payable{
+     function toBuyAsset(uint256 _id)public payable{
         
 
         Asset storage asset=assets[_id];
         uint256 buyquantity=msg.value;
         // require(asset.deadline < block.timestamp,"The deadline should be a date in the future");
-        require( buyquantity>asset.available,"not enough quantity available");
+        require(buyquantity > 0, "Invalid buy quantity");
+        require(asset.available >= buyquantity, "Insufficient available units");
         uint256 amount=buyquantity*asset.price;
         asset.available=asset.available-buyquantity;
         asset.buyer.push(msg.sender);
@@ -96,13 +97,10 @@ contract Myasset {
         buyer.description=asset.description;
         buyer.quantity=buyquantity;
         buyer.priceperunit=asset.price;
-        buyer.quantity=buyquantity;
         buyer.buyquantityavailable=buyquantity;
         buyer.image=asset.image;
         buys[msg.sender].push(buyer);
         }
-        
-
 
     }
 

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 
-import { DisplayAssets } from '../components';
+import { DisplayAssetsBuy } from '../components';
 import { useStateContext } from '../context'
 
-const Home = () => {
+const BoughtAsset = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [assets, setAssets] = useState([]);
 
-  const { address, contract, getAssets } = useStateContext();
+  const { address, contract, getBuyerAssets } = useStateContext();
 
   const fetchAssets = async () => {
     setIsLoading(true);
-    const data = await getAssets();
+    const data = await getBuyerAssets();
     setAssets(data);
     setIsLoading(false);
   }
@@ -21,7 +21,7 @@ const Home = () => {
   }, [address, contract]);
 
   return (
-    <DisplayAssets 
+    <DisplayAssetsBuy 
       title="All Assets"
       isLoading={isLoading}
       assets={assets}
@@ -29,4 +29,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default BoughtAsset

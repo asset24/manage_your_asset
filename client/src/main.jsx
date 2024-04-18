@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <ThirdwebProvider activeChain="fantom-testnet"
-  clientId="60b54797f891dcfd58577f30296c9c73"> 
+  clientId="635ee62e308012115ff144c2b40c9987"> 
     <Router>
       <StateContextProvider>
         <App />

@@ -7,7 +7,7 @@ module.exports = {
       hardhat: {},
       goerli: {
         url: 'https://rpc.testnet.fantom.network',
-        accounts: [`0x9E89b95bf4E965Aa9295967f8442701661eEBF10`]
+        accounts: [0x9E89b95bf4E965Aa9295967f8442701661eEBF10]
       }
     },
     settings: {

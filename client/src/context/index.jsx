@@ -8,21 +8,21 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   // const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
+  const { contract } = useContract('0x5264d88f24CA065bCc408B55F75694CaC193020A');
+  const { mutateAsync: createAsset } = useContractWrite(contract, 'createAsset');
 
   const address = useAddress();
   const connect = useMetamask();
 
-  const publishCampaign = async (form) => {
+  const publishAsset = async (form) => {
     try {
-      const data = await createCampaign({
+      const data = await createAsset({
 				args: [
 					address, // owner
 					form.title, // title
 					form.description, // description
-					form.target,
-					new Date(form.deadline).getTime(), // deadline,
+					form.quantity,
+          form.priceperunit,
 					form.image,
 				],
 			});
@@ -33,51 +33,130 @@ export const StateContextProvider = ({ children }) => {
     }
   }
 
-  const getCampaigns = async () => {
-    const campaigns = await contract.call('getCampaigns');
-
-    const parsedCampaings = campaigns.map((campaign, i) => ({
-      owner: campaign.owner,
-      title: campaign.title,
-      description: campaign.description,
-      target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
-      amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
-      image: campaign.image,
+  const getAssets = async () => {
+    const assets = await contract.call('getAssets');
+    const parsedAssets = assets.map((asset, i) => (
+      {
+      owner: asset.owner,
+      title: asset.title,
+      description: asset.description,
+      priceperunit: asset.price ? ethers.utils.formatEther(asset.price.toString()) : '',
+      quantity: asset.quantity ? asset.quantity.toString() : '',
+      available: asset.available.toString(),
+      image: asset.image,
+      buyer: asset.buyer,
+      boughtunits: asset.boughtunits,
       pId: i
     }));
 
-    return parsedCampaings;
+    return parsedAssets;
   }
 
-  const getUserCampaigns = async () => {
-    const allCampaigns = await getCampaigns();
+  const getUserAssets = async () => {
+    const allAssets = await getAssets();
 
-    const filteredCampaigns = allCampaigns.filter((campaign) => campaign.owner === address);
+    const filteredAssets = allAssets.filter((asset) => asset.owner === address);
 
-    return filteredCampaigns;
+    return filteredAssets;
   }
 
-  const donate = async (pId, amount) => {
-    const data = await contract.call('donateToCampaign', [pId], { value: ethers.utils.parseEther(amount)});
+  const getAdminAssetsSell = async (key) => {
+    const allAssets = await getAssets();
+  
+    const filteredAssets = allAssets.filter((asset) => asset.owner === key);
+  
+    return filteredAssets;
+  }
 
+  
+  
+
+  const toBuyAsset = async (pId, amount) => {
+    const data = await contract.call('toBuyAsset', [pId], { value:parseInt(amount, 10)});
     return data;
   }
 
-  const getDonations = async (pId) => {
-    const donations = await contract.call('getDonators', [pId]);
-    const numberOfDonations = donations[0].length;
+  const getBuyer = async (pId) => {
+    const buyer = await contract.call('getAssetBuyer', [pId]);
+    const numberOfBuyer = buyer[0].length;
 
-    const parsedDonations = [];
+    const parsedBuyer = [];
 
-    for(let i = 0; i < numberOfDonations; i++) {
-      parsedDonations.push({
-        donator: donations[0][i],
-        donation: ethers.utils.formatEther(donations[1][i].toString())
+    for(let i = 0; i < numberOfBuyer; i++) {
+      parsedBuyer.push({
+        buyer: buyer[0][i],
+        boughtunits: buyer[1][i].toString(),
       })
     }
+    return parsedBuyer;
+  }
 
-    return parsedDonations;
+  const getBuyerAssets = async () => {
+    const allAssets = await getAssets();
+  
+    let buyerAssets = [];  // Initialize buyerAssets as an empty array
+  
+    for (const asset of allAssets) {
+      const buyers = await getBuyer(asset.pId);
+      let buyersMap={
+        buyerAddress: address,
+        boughtunits: 0
+      };
+      for (let j = 0; j < buyers.length; j++) {
+        if (buyers[j].buyer === address) {
+          buyersMap.boughtunits+=parseInt(buyers[j].boughtunits, 10); 
+        }
+      }
+      if (buyersMap.boughtunits > 0) {
+        buyerAssets.push({
+          owner: asset.owner,
+          title: asset.title,
+          description: asset.description,
+          priceperunit: asset.priceperunit,
+          quantity: asset.quantity,
+          available: buyersMap.boughtunits,
+          image: asset.image,
+          pId: asset.pId
+        });
+      }
+
+    }
+  
+    return buyerAssets;
+  }
+
+  const getAdminAssetsBuy = async (key) => {
+    const allAssets = await getAssets();
+  
+    let buyerAssets = [];  // Initialize buyerAssets as an empty array
+  
+    for (const asset of allAssets) {
+      const buyers = await getBuyer(asset.pId);
+      let buyersMap={
+        buyerAddress: address,
+        boughtunits: 0
+      };
+      for (let j = 0; j < buyers.length; j++) {
+        if (buyers[j].buyer === key) {
+          buyersMap.boughtunits+=parseInt(buyers[j].boughtunits, 10); 
+        }
+      }
+      if (buyersMap.boughtunits > 0) {
+        buyerAssets.push({
+          owner: asset.owner,
+          title: asset.title,
+          description: asset.description,
+          priceperunit: asset.priceperunit,
+          quantity: asset.quantity,
+          available: buyersMap.boughtunits,
+          image: asset.image,
+          pId: asset.pId
+        });
+      }
+
+    }
+  
+    return buyerAssets;
   }
 
 
@@ -87,11 +166,14 @@ export const StateContextProvider = ({ children }) => {
         address,
         contract,
         connect,
-        createCampaign: publishCampaign,
-        getCampaigns,
-        getUserCampaigns,
-        donate,
-        getDonations
+        createAsset: publishAsset,
+        getAssets,
+        getUserAssets,
+        toBuyAsset,
+        getBuyerAssets,
+        getBuyer,
+        getAdminAssetsSell,
+        getAdminAssetsBuy
       }}
     >
       {children}
