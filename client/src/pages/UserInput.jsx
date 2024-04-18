@@ -22,21 +22,22 @@ const UserInput = () => {
     setForm({ ...form, [fieldName]: e.target.value })
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    
-      if(form.adminpassword=='adminpass') {
-        setIsLoading(true)
-        // await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18)})
-        setIsLoading(false);
-        navigate('/');
-      } else {
-        alert('Provide valid password');
-        setForm({ ...form });
-      }
-    
+  if (form.adminpassword === 'adminpass') {
+    setIsLoading(true);
+    // await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18)})
+    setIsLoading(false);
+    navigate('/user-details', {
+      state: { address: form.address },  // Pass address as state to the next route
+    });
+  } else {
+    alert('Provide valid password');
+    setForm({ ...form });
   }
+}
+
 
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">

@@ -21,4 +21,9 @@ export const navlinks = [
     imgUrl: profile,
     link: '/profile',
   },
+  {
+    name: 'payment',
+    imgUrl: payment,
+    link: '/admin-page',
+  },
 ];

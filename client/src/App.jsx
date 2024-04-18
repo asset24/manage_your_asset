@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { Sidebar, Navbar } from './components';
-import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset, UserInput } from './pages';
+import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset, UserInput, UserDetails } from './pages';
 
 const App = () => {
   return (
@@ -21,6 +21,7 @@ const App = () => {
           <Route path="/asset-details/:id" element={<AssetDetails />} />
           <Route path="/bought-asset" element={<BoughtAsset />} />
           <Route path="/admin-page" element={<UserInput />} />
+          <Route path="/user-details" element={<UserDetails />} />
         </Routes>
       </div>
     </div>

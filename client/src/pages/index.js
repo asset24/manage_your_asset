@@ -4,3 +4,4 @@ export { default as CreateAsset } from './CreateAsset';
 export { default as AssetDetails } from './AssetDetails';
 export { default as BoughtAsset } from './BoughtAsset';
 export { default as UserInput } from './UserInput';
+export { default as UserDetails } from './UserDetails';
