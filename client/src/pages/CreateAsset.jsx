@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ethers } from 'ethers';
 
 import { useStateContext } from '../context';
-import { money } from '../assets';
 import { CustomButton, FormField, Loader } from '../components';
 import { checkIfImage } from '../utils';
 
@@ -16,33 +15,35 @@ const CreateAsset = () => {
     title: '',
     description: '',
     priceperunit: '', 
-    quantity:0,
+    quantity: 0,
     image: ''
   });
 
   const handleFormFieldChange = (fieldName, e) => {
-    if((fieldName=="quantity" || fieldName=="priceperunit") && e.target.value<0)
-    {
-      e.target.value = 0;
+    let value = e.target.value;
+
+    if ((fieldName === "quantity" || fieldName === "priceperunit") && value < 0) {
+      value = 0;
     }
-    setForm({ ...form, [fieldName]: e.target.value })
-  }
+
+    setForm({ ...form, [fieldName]: value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     checkIfImage(form.image, async (exists) => {
-      if(exists) {
-        setIsLoading(true)
-        await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18)})
+      if (exists) {
+        setIsLoading(true);
+        await createAsset({ ...form, priceperunit: ethers.utils.parseUnits(form.priceperunit, 18) });
         setIsLoading(false);
         navigate('/');
       } else {
-        alert('Provide valid image URL')
+        alert('Provide a valid image URL');
         setForm({ ...form, image: '' });
       }
-    })
-  }
+    });
+  };
 
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
@@ -70,17 +71,12 @@ const CreateAsset = () => {
         </div>
 
         <FormField 
-            labelName="Description *"
-            placeholder="Wrie a Brief description"
-            isTextArea
-            value={form.description}
-            handleChange={(e) => handleFormFieldChange('description', e)}
-          />
-
-        {/* <div className="w-full flex justify-start items-center p-4 bg-[#8c6dfd] h-[120px] rounded-[10px]">
-          <img src={money} alt="money" className="w-[40px] h-[40px] object-contain"/>
-          <h4 className="font-epilogue font-bold text-[25px] text-white ml-[20px]">You will get 100% of the raised amount</h4>
-        </div> */}
+          labelName="Description *"
+          placeholder="Write a Brief description"
+          isTextArea
+          value={form.description}
+          handleChange={(e) => handleFormFieldChange('description', e)}
+        />
 
         <div className="flex flex-wrap gap-[40px]">
           <FormField 
@@ -98,27 +94,26 @@ const CreateAsset = () => {
             min="0"
             handleChange={(e) => handleFormFieldChange('quantity', e)}
           />
-          
         </div>
 
         <FormField 
-            labelName="Asset image *"
-            placeholder="Place image URL of your asset"
-            inputType="url"
-            value={form.image}
-            handleChange={(e) => handleFormFieldChange('image', e)}
-          />
+          labelName="Asset image *"
+          placeholder="Place image URL of your asset"
+          inputType="url"
+          value={form.image}
+          handleChange={(e) => handleFormFieldChange('image', e)}
+        />
         
-          <div className="flex justify-center items-center mt-[40px]">
-            <CustomButton 
-              btnType="submit"
-              title="Submit new asset"
-              styles="bg-[#1dc071]"
-            />
-          </div>
+        <div className="flex justify-center items-center mt-[40px]">
+          <CustomButton 
+            btnType="submit"
+            title="Submit new asset"
+            styles="bg-[#1dc071]"
+          />
+        </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default CreateAsset
+export default CreateAsset;
