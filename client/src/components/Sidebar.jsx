@@ -39,7 +39,7 @@ const Sidebar = () => {
                   }
                 }}
               />
-              <div className="text-white">
+              <div className="text-white items-center text-center p-2">
                 {link.name}
               </div>
             </>
