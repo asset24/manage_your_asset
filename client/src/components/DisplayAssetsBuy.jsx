@@ -22,7 +22,7 @@ const   DisplayAssetsBuy = ({ title, isLoading, assets }) => {
 
         {!isLoading && assets.length === 0 && (
           <p className="font-epilogue font-semibold text-[14px] leading-[30px] text-[#818183]">
-            You have not created any campigns yet
+            You have not bought any assets yet
           </p>
         )}
 

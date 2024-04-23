@@ -36,12 +36,12 @@ const UserDetails = () => {
     return (
         <>
             <DisplayAssets
-                title="Assests Sell By The User"
+                title="Assets Sold By The User"
                 isLoading={isLoading}
                 assets={assets}
             />
             <DisplayAssets
-                title="Assests Bought By The User"
+                title="Assets Bought By The User"
                 isLoading={isLoading}
                 assets={asset2}
             />
