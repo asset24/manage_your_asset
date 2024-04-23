@@ -2,27 +2,27 @@ import { createAsset, dashboard, logout, payment, profile, withdraw } from '../a
 
 export const navlinks = [
   {
-    name: 'dashboard',
+    name: 'Dashboard',
     imgUrl: dashboard,
     link: '/',
   },
   {
-    name: 'asset',
+    name: 'Asset',
     imgUrl: createAsset,
     link: '/create-asset',
   },
   {
-    name: 'withdraw',
+    name: 'Bought',
     imgUrl: withdraw,
     link: '/bought-asset',
   },
   {
-    name: 'profile',
+    name: 'Sold',
     imgUrl: profile,
     link: '/profile',
   },
   {
-    name: 'payment',
+    name: 'Admin',
     imgUrl: payment,
     link: '/admin-page',
   },
