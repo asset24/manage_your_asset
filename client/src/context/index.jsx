@@ -8,9 +8,10 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   // const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { contract } = useContract('0x8FDFee1044BA34D784888784728955c3be1f4A6e');
+  const { contract } = useContract('0x7989cFE35A5f1A5e4e40C406b7b21829A110A9F7');
   const { mutateAsync: createAsset } = useContractWrite(contract, 'createAsset');
-
+  const {mutateAsync: setUserProfile} = useContractWrite(contract, 'setUserProfile');
+  
   const address = useAddress();
   const connect = useMetamask();
 
@@ -32,6 +33,9 @@ export const StateContextProvider = ({ children }) => {
       console.log("contract call failure", error)
     }
   }
+ 
+  
+  
 
   const getAssets = async () => {
     const assets = await contract.call('getAssets');
@@ -48,7 +52,7 @@ export const StateContextProvider = ({ children }) => {
       boughtunits: asset.boughtunits,
       pId: i
     }));
-
+    
     return parsedAssets;
   }
 
@@ -159,6 +163,37 @@ export const StateContextProvider = ({ children }) => {
     return buyerAssets;
   }
 
+  const uploadProfile = async (form) => {
+    try{
+      const data= await setUserProfile({
+        args:[
+          form.name,
+          form.image
+        ]
+      })
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
+  const profileDetails = async () => {
+  try {
+    // Call the `getUserProfile` function of the contract to get the profile information
+    const profile = await contract.call('getUserProfile', [address]);
+    console.log(profile);
+    return {
+      name: profile[0],
+      image: profile[1]
+    }
+  } catch (error) {
+    // Handle errors, such as contract call failure or invalid address
+    console.error('Error fetching profile details:', error);
+    return { name: '', image: '' }; // Return default values or handle error state
+  }
+};
+  
+  
 
   return (
     <StateContext.Provider
@@ -173,7 +208,9 @@ export const StateContextProvider = ({ children }) => {
         getBuyerAssets,
         getBuyer,
         getAdminAssetsSell,
-        getAdminAssetsBuy
+        getAdminAssetsBuy,
+        uploadProfile,
+        profileDetails
       }}
     >
       {children}
