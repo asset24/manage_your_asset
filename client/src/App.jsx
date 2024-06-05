@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { Sidebar, Navbar } from './components';
-import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset, UserInput, UserDetails, ProfileUpload } from './pages';
+import { AssetDetails, CreateAsset, Home, Profile, BoughtAsset, UserInput, UserDetails, ProfileUpload, SellAsset } from './pages'; // Add UpdateAsset
 
 const App = () => {
   return (
@@ -23,10 +23,11 @@ const App = () => {
           <Route path="/admin-page" element={<UserInput />} />
           <Route path="/user-details" element={<UserDetails />} />
           <Route path="/profile-upload" element={<ProfileUpload />} />
+          <Route path="/sell-asset/" element={<SellAsset />} /> {/* Add this line */}
         </Routes>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default App

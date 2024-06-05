@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-contract Myasset {
-    struct Asset{
+contract MyAsset {
+    struct Asset {
         address owner;
         string title;
         string description;
@@ -10,115 +10,130 @@ contract Myasset {
         uint256 price;
         uint256 available;
         string image;
-        address[] buyer;
-        uint[] boughtunit;
-    }
-    mapping(uint => Asset ) public assets;
-    uint256 public numberofassets =0;
-    
-    
-    function createAsset(address _owner,string memory _title,string memory _description, uint256 _quantity,uint256 _price,string memory _image) public returns (uint256){
-        Asset storage asset=assets[numberofassets];
-        
-        // require(asset.deadline < block.timestamp,"The deadline should be a date in the future");
-        
-        asset.owner=_owner;
-        asset.title=_title;
-        asset.description=_description;
-        asset.quantity=_quantity;
-        asset.price=_price;
-        asset.available=_quantity;
-        asset.image=_image;
-           numberofassets++;
-           return numberofassets-1;
+        address[] buyers;
+        uint256[] boughtUnits;
+        address[] sellers;
+        uint256[] sellPrices;
+        uint256[] sellQuantities;
     }
 
- 
-        
-      
-
-    function getAssetBuyer(uint256 _id) view public returns (address[] memory,uint256[] memory) {
-        return (assets[_id].buyer, assets[_id].boughtunit);
-    }
-
-    function getAssets() public view returns (Asset[] memory){
-        Asset[] memory allassets=new Asset[](numberofassets);
-        for(uint i=0;i<numberofassets;i++){
-            // allassets[i] =assets[i];
-            Asset storage item = assets[i];
-            allassets[i]=item;
-
-        }
-        return allassets;
-    }
-     
-        struct Buy{
+    struct Buy {
         address owner;
         string title;
         string description;
         uint256 quantity;
-        uint256 priceperunit;
-        uint256 buyquantityavailable;
+        uint256 pricePerUnit;
+        uint256 buyQuantityAvailable;
         uint256 amountCollected;
         string image;
-        
     }
-    //  mapping(uint => asset ) public assets;
-    mapping(address => Buy[] ) public buys;
-    uint256 public numberofbuys =0;
-    
-    
 
-    
-    function getBuyer() view public returns (Buy[] memory) {
-       address buers=msg.sender;
-        return buys[buers];
-    }
-     
-
-     function toBuyAsset(uint256 _id)public payable{
-        
-
-        Asset storage asset=assets[_id];
-        uint256 buyquantity=msg.value;
-        // require(asset.deadline < block.timestamp,"The deadline should be a date in the future");
-        require(buyquantity > 0, "Invalid buy quantity");
-        require(asset.available >= buyquantity, "Insufficient available units");
-        uint256 amount=buyquantity*asset.price;
-        asset.available=asset.available-buyquantity;
-        asset.buyer.push(msg.sender);
-        asset.boughtunit.push(buyquantity);
-
-        (bool sent,)= payable(asset.owner).call{value:amount}("");
-        if(sent)
-      {  Buy memory buyer;
-        buyer.owner=msg.sender;
-        buyer.title=asset.title;
-        buyer.description=asset.description;
-        buyer.quantity=buyquantity;
-        buyer.priceperunit=asset.price;
-        buyer.buyquantityavailable=buyquantity;
-        buyer.image=asset.image;
-        buys[msg.sender].push(buyer);
-        }
-
-    }
-     
     struct Profile {
         string name;
         string image;
     }
 
+    mapping(uint256 => Asset) public assets;
+    mapping(address => Buy[]) public purchases;
     mapping(address => Profile) public profiles;
+
+    uint256 public assetCount = 0;
+
+    function createAsset(
+        address _owner,
+        string memory _title,
+        string memory _description,
+        uint256 _quantity,
+        uint256 _price,
+        string memory _image
+    ) public returns (uint256) {
+        Asset storage newAsset = assets[assetCount];
+        newAsset.owner = _owner;
+        newAsset.title = _title;
+        newAsset.description = _description;
+        newAsset.quantity = _quantity;
+        newAsset.price = _price;
+        newAsset.available = _quantity;
+        newAsset.image = _image;
+
+        assetCount++;
+        return assetCount - 1;
+    }
+
+    function getAssetBuyers(uint256 _id) public view returns (address[] memory, uint256[] memory) {
+        Asset storage asset = assets[_id];
+        return (asset.buyers, asset.boughtUnits);
+    }
+
+    function getAssets() public view returns (Asset[] memory) {
+        Asset[] memory allAssets = new Asset[](assetCount);
+        for (uint256 i = 0; i < assetCount; i++) {
+            allAssets[i] = assets[i];
+        }
+        return allAssets;
+    }
+
+    function getPurchases() public view returns (Buy[] memory) {
+        return purchases[msg.sender];
+    }
+
+    function buyAsset(uint256 _id, uint256 _quantity) public payable {
+        Asset storage asset = assets[_id];
+        uint256 totalCost = _quantity * asset.price;
+
+        require(msg.value >= totalCost, "Insufficient payment");
+        require(asset.available >= _quantity, "Insufficient available units");
+
+        asset.available -= _quantity;
+        asset.buyers.push(msg.sender);
+        asset.boughtUnits.push(_quantity);
+
+        (bool sent,) = payable(asset.owner).call{value: totalCost}("");
+        require(sent, "Payment failed");
+
+        Buy memory newPurchase = Buy({
+            owner: msg.sender,
+            title: asset.title,
+            description: asset.description,
+            quantity: _quantity,
+            pricePerUnit: asset.price,
+            buyQuantityAvailable: _quantity,
+            amountCollected: totalCost,
+            image: asset.image
+        });
+
+        purchases[msg.sender].push(newPurchase);
+    }
+
+    function sellAsset(uint256 _purchaseId, uint256 _quantity, uint256 _price) public returns (uint256){
+        require(_quantity > 0, "Quantity must be greater than zero");
+
+        // Ensure the seller has enough purchased quantity to sell
+        Buy[] storage userPurchases = purchases[msg.sender];
+        uint256 totalOwned = userPurchases[_purchaseId].buyQuantityAvailable;
+        require(totalOwned >= _quantity, "Insufficient quantity to sell");
+
+        // Create a sale record in the asset
+        Asset storage asset = assets[ assetCount];
+        asset.owner=msg.sender;
+        asset.title=userPurchases[_purchaseId].title;
+        asset.description=userPurchases[_purchaseId].description;
+        asset.quantity=_quantity;
+        asset.price = _price;
+        asset.available = _quantity;
+        asset.image = userPurchases[_purchaseId].image;
+        userPurchases[_purchaseId].buyQuantityAvailable-=_quantity;
+
+        assetCount++;
+        return assetCount-1;
+    }
 
     function setUserProfile(string memory _name, string memory _image) public {
         profiles[msg.sender] = Profile(_name, _image);
     }
 
-    function getUserProfile(address _user) view public returns (string memory, string memory) {
-        Profile memory profile = profiles[_user];
+    function getUserProfile(address _user) public view returns (string memory, string memory) {
+        Profile storage profile = profiles[_user];
         return (profile.name, profile.image);
     }
-
-    
 }

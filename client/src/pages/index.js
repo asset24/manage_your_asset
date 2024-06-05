@@ -6,3 +6,4 @@ export { default as BoughtAsset } from './BoughtAsset';
 export { default as UserInput } from './UserInput';
 export { default as UserDetails } from './UserDetails';
 export { default as ProfileUpload} from './ProfileUpload';
+export { default as SellAsset} from './SellAsset';

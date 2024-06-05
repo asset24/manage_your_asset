@@ -1,4 +1,4 @@
-import { createAsset, dashboard, logout, payment, profile, withdraw } from '../assets';
+import { createAsset, sellAsset, dashboard, logout, payment, profile, withdraw } from '../assets';
 
 export const navlinks = [
   {
@@ -10,6 +10,11 @@ export const navlinks = [
     name: 'Create Asset',
     imgUrl: createAsset,
     link: '/create-asset',
+  },
+  {
+    name: 'Sell Asset',
+    imgUrl: sellAsset,
+    link: '/sell-asset',
   },
   {
     name: 'Bought',

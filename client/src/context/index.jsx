@@ -7,13 +7,28 @@ import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  // const { contract } = useContract('0x5Bb014D2571c3e1799D49fb562e5Bbf7C3F4B20A');
-  const { contract } = useContract('0x7989cFE35A5f1A5e4e40C406b7b21829A110A9F7');
+  const { contract } = useContract('0x2d38757b8E78691Ac18455cb7ef58153c043922D');
   const { mutateAsync: createAsset } = useContractWrite(contract, 'createAsset');
   const {mutateAsync: setUserProfile} = useContractWrite(contract, 'setUserProfile');
   
+  const { mutateAsync: sellAsset } = useContractWrite(contract, 'sellAsset');
+
+
+
   const address = useAddress();
   const connect = useMetamask();
+
+  const sellAssetFunction = async (purchaseId, quantity, price) => {
+    try {
+      const data = await sellAsset({
+        args: [purchaseId, quantity, price],
+      });
+      console.log('Asset sold successfully', data);
+    } catch (error) {
+      console.log('Error selling asset', error);
+      throw error;
+    }
+  };
 
   const publishAsset = async (form) => {
     try {
@@ -210,7 +225,8 @@ export const StateContextProvider = ({ children }) => {
         getAdminAssetsSell,
         getAdminAssetsBuy,
         uploadProfile,
-        profileDetails
+        profileDetails,
+        sellAssetFunction
       }}
     >
       {children}
