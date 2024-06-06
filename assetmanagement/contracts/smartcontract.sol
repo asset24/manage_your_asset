@@ -88,21 +88,19 @@ contract MyAsset {
         asset.buyers.push(msg.sender);
         asset.boughtUnits.push(_quantity);
 
-        (bool sent,) = payable(asset.owner).call{value: totalCost}("");
-        require(sent, "Payment failed");
-
-        Buy memory newPurchase = Buy({
-            owner: msg.sender,
-            title: asset.title,
-            description: asset.description,
-            quantity: _quantity,
-            pricePerUnit: asset.price,
-            buyQuantityAvailable: _quantity,
-            amountCollected: totalCost,
-            image: asset.image
-        });
-
-        purchases[msg.sender].push(newPurchase);
+        (bool sent,)= payable(asset.owner).call{value:totalCost}("");
+        if(sent){
+            Buy memory newPurchase;
+            newPurchase.owner = msg.sender;
+            newPurchase.title = asset.title;
+            newPurchase.description = asset.description;
+            newPurchase.quantity = _quantity;
+            newPurchase.pricePerUnit = asset.price;
+            newPurchase.buyQuantityAvailable = _quantity;
+            newPurchase.amountCollected = totalCost;
+            newPurchase.image = asset.image;
+            purchases[msg.sender].push(newPurchase);
+        }
     }
 
     function sellAsset(uint256 _purchaseId, uint256 _quantity, uint256 _price) public returns (uint256){
